@@ -1,5 +1,6 @@
 Climbing social website
 Web app created by climber for climbers. Allow to reqister your climbings and compete wit others
+
 Basic functions:
 - Register/Login user
 - Adding climbings basing on different difficulty scales 
