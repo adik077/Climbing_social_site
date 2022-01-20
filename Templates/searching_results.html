@@ -1,0 +1,59 @@
+{% extends 'main.html' %}
+{% block title %}Rock'n Climb - add route{% endblock %}
+{% load static %}
+
+{% block body %}
+    <main class="content">
+
+				<div class="container-fluid p-0">
+					<h1 class="h3 mb-3"><strong>Searching</strong> Results</h1>
+
+					<div class="row">
+						<div class="col-12 col-lg-12 col-xxl-9 d-flex">
+							<div class="card flex-fill">
+								<div class="card-header">
+
+									<h5 class="card-title mb-0">We have found following people</h5><br><br>
+                                     <div class="container">
+                                    {% if searching_results %}
+                                        {% for searching_result in searching_results %}
+                                          <div class="row">
+                                            <div class="col">
+                                               {% if searching_result.userprofile.photo %}
+                                                    <img src="{{searching_result.userprofile.photo.url}}" class="img-fluid rounded-circle mb-2" width="64" height="64" />
+                                                {% else %}
+                                                    <img src="{% static 'images/anonymous-user.png' %}" class="img-fluid rounded-circle mb-2" width="64" height="64" />
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-10">
+                                                <a href="{% url 'searched_profile' 'all' searching_result.id %}">
+                                                    <h6 class="card-title mb-0" style="color:black">{{searching_result.username|title}}</h6>
+                                                </a>
+                                                <span data-feather="map-pin" class="feather-sm me-1"></span> From:
+                                                {% if searching_result.userprofile.where_from %}
+                                                    <a href="https://www.google.com/maps/place/{{searching_result.userprofile.where_from}}">{{searching_result.userprofile.where_from}}</a>
+											    {% else %}
+                                                    No info
+                                                {% endif %}<br>
+                                                <span data-feather="home" class="feather-sm me-1"></span> Lives in:
+                                                {% if searching_result.userprofile.where_lives %}
+													Lives in <a href="https://www.google.com/maps/place/{{searching_result.userprofile.where_lives}}">{{searching_result.userprofile.where_lives}}</a>
+											    {% else %}
+                                                    No info
+                                                {% endif %}<br>
+                                            </div>
+                                          </div><hr>
+                                        {% endfor %}
+                                    {% else %}
+                                        Sorry, we cannot find anything matching to your query...
+                                    {% endif %}
+                                         </div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+
+{% endblock %}

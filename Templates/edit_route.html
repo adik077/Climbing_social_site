@@ -1,0 +1,68 @@
+{% extends 'main.html' %}
+{% block title %}Rock'n Climb - add route{% endblock %}
+
+{% block body %}
+
+{% load mapbox_location_field_tags %}
+ {% location_field_includes %}
+ {% include_jquery %}
+
+    <main class="content">
+
+				<div class="container-fluid p-0">
+                    {% for message in messages %}
+                        {% if message.tags == 'success' %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>{{message}}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" style="float:right"></button>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>{{message}}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" style="float:right"></button>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+					<h1 class="h3 mb-3"><strong>Edit</strong> Route</h1>
+
+					<div class="row">
+						<div class="col-12 col-lg-12 col-xxl-9 d-flex">
+							<div class="card flex-fill">
+								<div class="card-header">
+
+									<h5 class="card-title mb-0">Edit Your route</h5><br>
+									{% if user.id == route.user.id %}
+									<form method="POST"  id="routeForm" data-grades-url="{% url 'ajax_load_grades' %}" novalidate>
+										{% csrf_token %}
+										{{form.as_p}}
+										<button type="submit" class="btn btn-info">Update</button>
+									</form>
+									{{form.media}}
+									<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  									<script>
+									 $("#id_category").change(function () {
+									  var url = $("#routeForm").attr("data-grades-url");
+									  var categoryId = $(this).val();
+
+									  $.ajax({
+										url: url,
+										data: {
+										  'category': categoryId
+										},
+										success: function (data) {
+										  $("#id_official_grade").html(data);
+										}
+									  });
+
+									});
+  									</script>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+
+{% endblock %}

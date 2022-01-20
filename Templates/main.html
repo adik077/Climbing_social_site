@@ -1,0 +1,287 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% load static %}
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="AG">
+
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+
+	<title>{% block title %}{% endblock %}</title>
+
+	<link rel="stylesheet" href="{% static 'style.css' %}" >
+	<link rel="stylesheet" href="{% static 'modal.css' %}" >
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+</head>
+
+<style>
+    .alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.alert h4 {
+  margin-top: 0;
+  color: inherit;
+}
+
+.alert .alert-link {
+  font-weight: bold;
+}
+
+.alert > p,
+.alert > ul {
+  margin-bottom: 0;
+}
+
+.alert > p + p {
+  margin-top: 5px;
+}
+
+.alert-dismissable,
+.alert-dismissible {
+  padding-right: 35px;
+}
+
+.alert-dismissable .close,
+.alert-dismissible .close {
+  position: relative;
+  top: -2px;
+  right: -21px;
+  color: inherit;
+}
+
+.alert-success {
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+  color: #3c763d;
+}
+
+.alert-success hr {
+  border-top-color: #c9e2b3;
+}
+
+.alert-success .alert-link {
+  color: #2b542c;
+}
+
+.alert-info {
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+  color: #31708f;
+}
+
+.alert-info hr {
+  border-top-color: #a6e1ec;
+}
+
+.alert-info .alert-link {
+  color: #245269;
+}
+
+.alert-warning {
+  background-color: #fcf8e3;
+  border-color: #faebcc;
+  color: #8a6d3b;
+}
+
+.alert-warning hr {
+  border-top-color: #f7e1b5;
+}
+
+.alert-warning .alert-link {
+  color: #66512c;
+}
+
+.alert-danger {
+  background-color: #f2dede;
+  border-color: #ebccd1;
+  color: #a94442;
+}
+
+.alert-danger hr {
+  border-top-color: #e4b9c0;
+}
+
+.alert-danger .alert-link {
+  color: #843534;
+}
+</style>
+
+<body>
+	<div class="wrapper">
+		<nav id="sidebar" class="sidebar js-sidebar">
+			<div class="sidebar-content js-simplebar">
+				<a class="sidebar-brand" href="{% url 'main_dashboard' %}"><span class="align-middle">Rock'n Climb</span></a>
+
+				<ul class="sidebar-nav">
+					{% if user.is_authenticated %}
+                  	<li class="sidebar-header">
+						My climbing
+					</li>
+
+
+					{% if 'my_profile' in request.path %}
+						<li class="sidebar-item active">
+							<a class="sidebar-link" href="{% url 'my_profile' 'all' %}"><i class="align-middle" data-feather="user"></i> <span class="align-middle">My profile</span></a>
+						</li>
+					{% else %}
+						<li class="sidebar-item">
+							<a class="sidebar-link" href="{% url 'my_profile' 'all' %}"><i class="align-middle" data-feather="user"></i> <span class="align-middle">My profile</span></a>
+						</li>
+					{% endif %}
+
+					{% if 'add_route' in request.path %}
+						<li class="sidebar-item active">
+							<a class="sidebar-link" href="{% url 'add_route' %}"><i class="align-middle" data-feather="check-square"></i> <span class="align-middle">Add route</span></a>
+						</li>
+					{% else %}
+						<li class="sidebar-item">
+							<a class="sidebar-link" href="{% url 'add_route' %}"><i class="align-middle" data-feather="check-square"></i> <span class="align-middle">Add route</span></a>
+						</li>
+					{% endif %}
+
+					{% if 'routes' in request.path %}
+						<li class="sidebar-item active">
+							<a class="sidebar-link" href="{% url 'all_routes' 'all' %}"><i class="align-middle" data-feather="book"></i> <span class="align-middle">All routes</span></a>
+						</li>
+					{% else %}
+						<li class="sidebar-item">
+							<a class="sidebar-link" href="{% url 'all_routes' 'all' %}"><i class="align-middle" data-feather="book"></i> <span class="align-middle">All routes</span></a>
+						</li>
+					{% endif %}
+					{% endif %}
+
+					<li class="sidebar-header">
+						Profile menu
+					</li>
+
+					{% if user.is_authenticated %}
+					{% if 'main_settings' in request.path %}
+						<li class="sidebar-item active">
+							<a class="sidebar-link" href="{% url 'main_settings' %}"><i class="align-middle" data-feather="settings"></i> <span class="align-middle">Main settings</span></a>
+						</li>
+					{% else %}
+						<li class="sidebar-item">
+							<a class="sidebar-link" href="{% url 'main_settings' %}"><i class="align-middle" data-feather="settings"></i> <span class="align-middle">Main settings</span></a>
+						</li>
+					{% endif %}
+
+					{% if 'profile_settings' in request.path %}
+						<li class="sidebar-item active">
+							<a class="sidebar-link" href="{% url 'profile_settings' %}"><i class="align-middle" data-feather="user-check"></i> <span class="align-middle">Profile settings</span></a>
+						</li>
+					{% else %}
+						<li class="sidebar-item">
+							<a class="sidebar-link" href="{% url 'profile_settings' %}"><i class="align-middle" data-feather="user-check"></i> <span class="align-middle">Profile settings</span></a>
+						</li>
+					{% endif %}
+					{% endif %}
+
+					{% if user.is_authenticated %}
+						<li class="sidebar-item">
+							<a class="sidebar-link" href="{% url 'logout_user' %}"><i class="align-middle" data-feather="log-out"></i> <span class="align-middle">Log out</span></a>
+						</li>
+					{% else %}
+						<li class="sidebar-item">
+							<a class="sidebar-link" href="{% url 'login_user' %}"><i class="align-middle" data-feather="log-in"></i> <span class="align-middle">Sign In</span></a>
+						</li>
+					{% endif %}
+
+					{% if not user.is_authenticated %}
+						<li class="sidebar-item">
+							<a class="sidebar-link" href="{% url 'register' %}"><i class="align-middle" data-feather="user-plus"></i> <span class="align-middle">Sign Up</span></a>
+						</li>
+					{% endif %}
+
+				</ul>
+			</div>
+		</nav>
+
+
+		<div class="main">
+			<nav class="navbar navbar-expand navbar-light navbar-bg">
+				<a class="sidebar-toggle js-sidebar-toggle"><i class="hamburger align-self-center"></i></a>
+
+				{% if user.is_authenticated %}
+				<div class="navbar-collapse collapse">
+					<ul class="navbar-nav navbar-align">
+						<li>
+							<nav>
+							  <div class="container-fluid">
+								<form class="d-flex" action="{% url 'find_user' %}" method="POST">
+									{% csrf_token %}
+								  <input class="form-control me-2" type="text" placeholder="Find a user" name="search_user" id="search_user" aria-label="Search">
+								  <button class="btn btn-outline-success" type="submit">Search</button>
+								</form>
+							  </div>
+							</nav>
+						</li>
+						<li class="nav-item dropdown">
+                          <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-bs-toggle="dropdown"><i class="align-middle" data-feather="settings"></i></a>
+							{% if user.userprofile.photo %}
+								<img src="{{user.userprofile.photo.url}}" class="avatar img-fluid rounded me-1" alt="Profile photo" />
+							{% else %}
+								<img src="{% static 'images/anonymous-user.png' %}" class="avatar img-fluid rounded me-1" alt="Profile photo" />
+							{% endif %}
+							<a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
+								<span class="text-dark">{{user|title}}</span>
+                            </a>
+							<div class="dropdown-menu dropdown-menu-end">
+								<a class="dropdown-item" href="{% url 'profile_settings' %}"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="{% url 'main_settings' %}"><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item" href="{% url 'logout_user' %}">Log out</a>
+							</div>
+						</li>
+					</ul>
+				</div>
+				{% else %}
+					<div class="navbar-collapse collapse">
+						<ul class="navbar-nav navbar-align">
+
+						<li class="nav-item dropdown">
+							<span class="text-dark">Not Signed in? <a href="{% url 'login_user' %}" style="text-decoration:none"> Log in</a></span>
+                            </a>
+						</li>
+						</ul>
+					</div>
+				{% endif %}
+			</nav>
+
+			{% block body %}
+			{% endblock %}
+
+			<footer class="footer">
+				<div class="container-fluid">
+					<div class="row text-muted">
+						<div class="col-6 text-start">
+							<p class="mb-0">
+                              <strong>Designed by AG,</strong> <a class="text-muted" href="https://adminkit.io/" target="_blank"><strong>Powered by AdminKit</strong></a> &copy;
+							</p>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div>
+	</div>
+
+	<script src="{% static 'app.js' %}"></script>
+	<script src="https://kit.fontawesome.com/f29e29d3e8.js" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

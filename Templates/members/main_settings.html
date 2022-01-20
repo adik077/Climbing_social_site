@@ -1,0 +1,44 @@
+{% extends 'main.html' %}
+{% block title %}Rock'n Climb - add route{% endblock %}
+
+{% block body %}
+
+    <main class="content">
+
+				<div class="container-fluid p-0">
+                    {% for message in messages %}
+                        {% if message.tags == 'success' %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>{{message}}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" style="float:right"></button>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>{{message}}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" style="float:right"></button>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+					<h1 class="h3 mb-3"><strong>Main</strong> Settings</h1>
+
+					<div class="row">
+						<div class="col-12 col-lg-12 col-xxl-9 d-flex">
+							<div class="card flex-fill">
+								<div class="card-header">
+
+									<h5 class="card-title mb-0">Change Your settings</h5><br>
+									<form method="POST">
+										{% csrf_token %}
+										{{form.as_p}}
+										<a href="{% url 'change_password' %}" style="text-decoration:none">Change password...</a><br><br>
+										<button type="submit" class="btn btn-info">Submit</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</main>
+
+{% endblock %}

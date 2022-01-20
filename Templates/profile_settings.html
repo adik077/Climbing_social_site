@@ -1,0 +1,150 @@
+{% extends 'main.html' %}
+{% block title %}Rock'n Climb - my profile{% endblock %}
+{% load static %}
+
+{% block body %}
+
+			<main class="content">
+				<div class="container-fluid p-0">
+
+					{% for message in messages %}
+                        {% if message.tags == 'success' %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>{{message}}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" style="float:right"></button>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>{{message}}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" style="float:right"></button>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+					<div class="mb-3">
+						<h1 class="h3 d-inline align-middle">Profile Settings</h1>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-xl-3">
+							<div class="card mb-3">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Profile Details</h5>
+								</div>
+								<div class="card-body text-center">
+									{% if user_info.userprofile.photo %}
+										<img src="{{user_info.userprofile.photo.url}}" class="img-fluid rounded-circle mb-2" width="128" height="128" />
+									{% else %}
+										<img src="{% static 'images/anonymous-user.png' %}" class="img-fluid rounded-circle mb-2" width="128" height="128" />
+									{% endif %}
+									<h5 class="card-title mb-0">{{user_info.username|title}}</h5>
+									<div class="text-muted mb-2">{{user_level}} Climber<br>
+										{% if user_level == 'Semi' %}
+											<span data-feather="star" class="feather-sm me-1" style="color:#DCDF0B "></span>
+										{% elif user_level == 'Advanced' %}
+											<span data-feather="star" class="feather-sm me-1" style="color:#DCDF0B "></span>
+											<span data-feather="star" class="feather-sm me-1" style="color:#DCDF0B "></span>
+										{% elif user_level == 'Pro' %}
+											<span data-feather="star" class="feather-sm me-1" style="color:#DCDF0B "></span>
+											<span data-feather="star" class="feather-sm me-1" style="color:#DCDF0B "></span>
+											<span data-feather="star" class="feather-sm me-1" style="color:#DCDF0B "></span>
+										{% endif %}
+									</div>
+
+									<div>
+										{% if user_info.userprofile.photo %}
+											<a href="{% url 'remove_profile_photo' %}" class="btn btn-sm btn-danger mt-1"><i class="feather-sm" data-feather="x"></i> Remove photo</a>
+										{% endif %}
+									</div>
+								</div>
+								<hr class="my-0" />
+								<div class="card-body">
+									<h5 class="h6 card-title">Recommended climbing places</h5>
+									{% if user_info.userprofile.best_places.all %}
+										{% for place in user_info.userprofile.best_places.all %}
+											<span class="badge bg-primary me-1 my-1">{{place|title}}</span>
+										{% endfor %}
+									{% else %}
+										No recommended places added...
+									{% endif %}
+								</div>
+								<hr class="my-0" />
+								<div class="card-body">
+									<h5 class="h6 card-title">About</h5>
+									<ul class="list-unstyled mb-0">
+										{% if user_info.userprofile.where_lives or user_info.userprofile.where_from %}
+											{% if user_info.userprofile.where_lives %}
+												<li class="mb-1"><span data-feather="home" class="feather-sm me-1"></span>
+													Lives in <a href="https://www.google.com/maps/place/{{user_info.userprofile.where_lives}}">{{user_info.userprofile.where_lives}}</a>
+												</li>
+											{% endif %}
+											{% if user_info.userprofile.where_from %}
+												<li class="mb-1"><span data-feather="map-pin" class="feather-sm me-1"></span>
+													From <a href="https://www.google.com/maps/place/{{user_info.userprofile.where_from}}">{{user_info.userprofile.where_from}}</a>
+												</li>
+											{% endif %}
+										{% else %}
+											No info to display...
+										{% endif %}
+									</ul>
+								</div>
+								<hr class="my-0" />
+								<div class="card-body">
+									<h5 class="h6 card-title">Elsewhere</h5>
+									<ul class="list-unstyled mb-0">
+										{% if user_info.userprofile.twitter_url or user_info.userprofile.facebook_url or user_info.userprofile.instagram_url %}
+											{% if user_info.userprofile.twitter_url %}
+												<li class="mb-1">
+													<a href="{{user_info.userprofile.twitter_url}}" style="text-decoration:none"><span data-feather="twitter" class="feather-sm me-1"></span> Twitter </a>
+												</li>
+											{% endif %}
+											{% if user_info.userprofile.facebook_url %}
+											<li class="mb-1">
+												<a href="{{user_info.userprofile.facebook_url}}" style="text-decoration:none"><span data-feather="facebook" class="feather-sm me-1"></span> Facebook  </a>
+											</li>
+											{% endif %}
+											{% if user_info.userprofile.instagram_url %}
+											<li class="mb-1">
+												<a href="{{user_info.userprofile.instagram_url}}" style="text-decoration:none"><span data-feather="instagram" class="feather-sm me-1"></span> Instagram  </a>
+											</li>
+											{% endif %}
+										{% else %}
+											No info to display...
+										{% endif %}
+									</ul>
+								</div>
+							</div>
+						</div>
+
+
+						<div class="col-md-8 col-xl-9">
+							<div class="card flex-fill">
+
+								<div class="card-header">
+									<h5 class="card-title mb-0">My info</h5>
+                                </div>
+								<div class="card-body">
+
+									<form method="post" enctype="multipart/form-data" >
+										{% csrf_token %}
+
+										{{form.as_p}}
+										<div class="row" style="width:100%">
+        									<div id="cropper" style="width:100%"></div>
+    									</div>
+										{{form.media}}
+										<button type="submit" class="btn btn-info" style="float:right" >Submit</button>
+										<a href="javascript:history.go(0)" class="btn btn-bg btn-danger mt-1"><i class="feather-sm" data-feather="refresh-ccw"></i> Cancel</a>
+									</form>
+
+								</div>
+                            </div>
+                        </div>
+
+					</div>
+
+				</div>
+			</main>
+
+
+
+{% endblock %}

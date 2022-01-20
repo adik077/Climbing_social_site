@@ -1,0 +1,98 @@
+{% extends 'main.html' %}
+{% block title %}Rock'n Climb - routes{% endblock %}
+{% load static %}
+
+{% block body %}
+    <main class="content">
+				<div class="container-fluid p-0">
+
+					<h1 class="h3 mb-3"><strong>Routes</strong> Database</h1>
+
+					<div class="row">
+						<div class="col-12 col-lg-12 col-xxl-9 d-flex">
+							<div class="card flex-fill">
+								<div class="card-header">
+
+									<h5 class="card-title mb-0">Users Routes</h5>
+                                    <ul class="nav justify-content-center">
+                                        {% for category in categories %}
+											<li class="nav-item">
+												<a href="{% url 'all_routes' category %}"><button type="button" class="btn btn-info btn-sm">{{category}}</button></a>&nbsp&nbsp
+											</li>
+                                        {% endfor %}
+                                        <a href="{% url 'all_routes' 'all' %}"><button type="button" class="btn btn-info btn-sm">All</button></a>&nbsp&nbsp
+                                    </ul><br>
+									<div class="nav justify-content-center">
+										<form class="d-flex" action="{% url 'find_route' %}" method="POST">
+											{% csrf_token %}
+								  			<input class="form-control me-2" type="text" placeholder="Wanna find a route?" name="find_route" id="find_route" aria-label="Search" style="width:100%">
+								 			 <button class="btn btn-outline-dark" type="submit">Search</button>
+										</form>
+									</div>
+								</div>
+
+
+
+								<table class="table table-hover my-0">
+									<thead>
+										<tr>
+											{% if all_routes %}
+												<th>Route</th>
+												<th class="d-none d-xl-table-cell">Grade</th>
+												<th class="d-none d-xl-table-cell">Category</th>
+												<th>User</th>
+												<th class="d-none d-md-table-cell">Added</th>
+											{% endif %}
+										</tr>
+									</thead>
+									<tbody>
+										{% if all_routes %}
+											{% for route in all_routes %}
+												<tr>
+													<td><a href="{% url 'route_detail' route.id %}" style="color:inherit;text-decoration:none">{{route.route_name}}</a></td>
+													<td class="d-none d-xl-table-cell">{{route.official_grade}}</td>
+													<td class="d-none d-xl-table-cell">{{route.category}}</td>
+													<td>
+														{% if route.user.userprofile.photo %}
+															<img src="{{route.user.userprofile.photo.url}}" class="img-fluid rounded-circle mb-2" width="32" height="32"/>
+														{% else %}
+															<img src="{% static 'images/anonymous-user.png' %}" class="img-fluid rounded-circle mb-2" width="32" height="32" />
+														{% endif %}
+														<span class="badge bg-success">{{route.user}}</span>
+													</td>
+													<td class="d-none d-md-table-cell">{{route.added}}</td>
+												</tr>
+											{% endfor %}
+										{% else %}
+											<tr>
+												<td>There are no entries in this category yet...</td>
+											</tr>
+
+										{% endif %}
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+                        <div class="pagination" style="text-align:center">
+                            <span class="step-links">
+                                        {% if all_routes.has_previous %}
+                                        <a class="page-link" href="?page=1" style="text-decoration:none">&laquo;</a>
+                                         <a class="page-link" href="?page={{ all_routes.previous_page_number }}" style="text-decoration:none">prev</a>
+                                        {% endif %}
+
+                                        <span class="current">
+                                            Page {{ all_routes.number }} of {{ all_routes.paginator.num_pages }}
+                                        </span>
+
+                                        {% if all_routes.has_next %}
+                                            <a href="?page={{ all_routes.next_page_number }}" style="text-decoration:none">next</a>
+                                            <a href="?page={{ all_routes.paginator.num_pages }}" style="text-decoration:none">&raquo;</a>
+                                        {% endif %}
+                            </span>
+                        </div>
+					</div>
+
+				</div>
+			</main>
+{% endblock %}

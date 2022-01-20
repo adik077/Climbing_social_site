@@ -1,0 +1,289 @@
+{% extends 'main.html' %}
+{% block title %}Rock'n Climb - my profile{% endblock %}
+{% load static %}
+
+{% block body %}
+			<main class="content">
+				<div class="container-fluid p-0">
+
+					{% for message in messages %}
+                        {% if message.tags == 'success' %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>{{message}}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" style="float:right"></button>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong>{{message}}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" style="float:right"></button>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+					<div class="mb-3">
+						<h1 class="h3 d-inline align-middle">Profile</h1>
+					</div>
+					<div class="row">
+						<div class="col-md-4 col-xl-3">
+							<div class="card mb-3">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Profile Details</h5>
+								</div>
+								<div class="card-body text-center">
+									{% if user_info.userprofile.photo %}
+										<img src="{{user_info.userprofile.photo.url}}" class="img-fluid rounded-circle mb-2" width="128" height="128" />
+									{% else %}
+										<img src="{% static 'images/anonymous-user.png' %}" class="img-fluid rounded-circle mb-2" width="128" height="128" />
+									{% endif %}
+									<h5 class="card-title mb-0">{{user_info.username|title}}</h5>
+									<div class="text-muted mb-2">{{user_level}} Climber<br>
+									{% if user_level == 'Semi' %}
+											<span data-feather="star" class="feather-sm me-1" style="color:#DCDF0B "></span>
+										{% elif user_level == 'Advanced' %}
+											<span data-feather="star" class="feather-sm me-1" style="color:#DCDF0B "></span>
+											<span data-feather="star" class="feather-sm me-1" style="color:#DCDF0B "></span>
+										{% elif user_level == 'Pro' %}
+											<span data-feather="star" class="feather-sm me-1" style="color:#DCDF0B "></span>
+											<span data-feather="star" class="feather-sm me-1" style="color:#DCDF0B "></span>
+											<span data-feather="star" class="feather-sm me-1" style="color:#DCDF0B "></span>
+									{% endif %}
+									</div>
+
+
+								</div>
+								<hr class="my-0" />
+								<div class="card-body">
+									<h5 class="h6 card-title">Recommended climbing places</h5>
+									{% if user_info.userprofile.best_places.all %}
+										{% for place in user_info.userprofile.best_places.all %}
+											<span class="badge bg-primary me-1 my-1">{{place|title}}</span>
+										{% endfor %}
+									{% else %}
+										No recommended places added...
+									{% endif %}
+								</div>
+								<hr class="my-0" />
+								<div class="card-body">
+									<h5 class="h6 card-title">About</h5>
+									<ul class="list-unstyled mb-0">
+										{% if user_info.userprofile.where_lives or user_info.userprofile.where_from %}
+											{% if user_info.userprofile.where_lives %}
+												<li class="mb-1"><span data-feather="home" class="feather-sm me-1"></span>
+													Lives in <a href="https://www.google.com/maps/place/{{user_info.userprofile.where_lives}}">{{user_info.userprofile.where_lives}}</a>
+												</li>
+											{% endif %}
+											{% if user_info.userprofile.where_from %}
+												<li class="mb-1"><span data-feather="map-pin" class="feather-sm me-1"></span>
+													From <a href="https://www.google.com/maps/place/{{user_info.userprofile.where_from}}">{{user_info.userprofile.where_from}}</a>
+												</li>
+											{% endif %}
+										{% else %}
+											No info to display...
+										{% endif %}
+									</ul>
+								</div>
+								<hr class="my-0" />
+								<div class="card-body">
+									<h5 class="h6 card-title">Elsewhere</h5>
+									<ul class="list-unstyled mb-0">
+										{% if user_info.userprofile.twitter_url or user_info.userprofile.facebook_url or user_info.userprofile.instagram_url %}
+											{% if user_info.userprofile.twitter_url %}
+												<li class="mb-1">
+													<a href="{{user_info.userprofile.twitter_url}}" style="text-decoration:none"><span data-feather="twitter" class="feather-sm me-1"></span> Twitter </a>
+												</li>
+											{% endif %}
+											{% if user_info.userprofile.facebook_url %}
+											<li class="mb-1">
+												<a href="{{user_info.userprofile.facebook_url}}" style="text-decoration:none"><span data-feather="facebook" class="feather-sm me-1"></span> Facebook  </a>
+											</li>
+											{% endif %}
+											{% if user_info.userprofile.instagram_url %}
+											<li class="mb-1">
+												<a href="{{user_info.userprofile.instagram_url}}" style="text-decoration:none"><span data-feather="instagram" class="feather-sm me-1"></span> Instagram  </a>
+											</li>
+											{% endif %}
+										{% else %}
+											No info to display...
+										{% endif %}
+									</ul>
+								</div>
+							</div>
+						</div>
+
+						<!-- Routes -->
+						<div class="col-md-8 col-xl-9">
+							<div class="card flex-fill">
+
+								<div class="card-header">
+
+									<h5 class="card-title mb-0">My Routes</h5>
+                                    <ul class="nav justify-content-center">
+                                        {% for category in categories %}
+											<li class="nav-item">
+												<a href="{% url 'my_profile' category %}"><button type="button" class="btn btn-info btn-sm">{{category}}</button></a>&nbsp&nbsp
+											</li>
+                                        {% endfor %}
+                                        <a href="{% url 'my_profile' 'all' %}"><button type="button" class="btn btn-info btn-sm">All</button></a>&nbsp&nbsp
+
+                                    </ul>
+								</div>
+
+								<table class="table table-hover my-0">
+									<thead>
+										<tr>
+											{% if all_routes %}
+												<th>Route</th>
+                                                <th class="d-none d-xl-table-cell">Edit/Delete</th>
+												<th class="d-none d-xl-table-cell">Grade</th>
+												<th class="d-none d-xl-table-cell">Category</th>
+												<th>User</th>
+												<th class="d-none d-md-table-cell">Added</th>
+											{% endif %}
+										</tr>
+									</thead>
+									<tbody>
+										{% if all_routes %}
+											{% for route in all_routes %}
+												<tr>
+													<td>
+														<a href="{% url 'route_detail' route.id %}" style="color:inherit;text-decoration:none">{{route.route_name}}</a>
+                                                    </td>
+                                                    <td class="d-none d-xl-table-cell">
+                                                        <a href="{% url 'edit_route' route.id actual_category %}"><i class="align-middle" data-feather="edit-3"></i></a>
+														<a data-bs-toggle="modal" data-bs-target="#collapse{{route.id}}" style="color:#D90C3B"><i class="align-middle" data-feather="trash-2"></i></a>
+                                                    </td>
+													<td class="d-none d-xl-table-cell">{{route.official_grade}}</td>
+													<td class="d-none d-xl-table-cell">{{route.category}}</td>
+													<td><span class="badge bg-success">{{route.user}}</span></td>
+													<td class="d-none d-md-table-cell">{{route.added}}</td>
+												</tr>
+
+										<!-- Modal -->
+												<div class="modal fade" id="collapse{{route.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+												  <div class="modal-dialog">
+													<div class="modal-content">
+													  <div class="modal-header">
+														<h5 class="modal-title" id="exampleModalLabel">Delete?</h5>
+														<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+													  </div>
+													  <div class="modal-body">
+														Are You sure You want to delete "{{route.route_name}}" route from database?
+													  </div>
+													  <div class="modal-footer">
+														<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+														  <a href="{% url 'delete_route' route.id actual_category %}"><button type="button" class="btn btn-primary">Yes</button></a>
+													  </div>
+													</div>
+												  </div>
+												</div>
+										<!-- Modal end -->
+											{% endfor %}
+										{% else %}
+											<tr>
+												<td>There are no entries in this category yet...</td>
+											</tr>
+
+										{% endif %}
+
+									</tbody>
+								</table>
+							</div>
+							<div class="pagination" style="text-align:center">
+                            	<span class="step-links">
+                                        {% if all_routes.has_previous %}
+                                        <a class="page-link" href="?page=1" style="text-decoration:none">&laquo;</a>
+                                         <a class="page-link" href="?page={{ all_routes.previous_page_number }}" style="text-decoration:none">prev</a>
+                                        {% endif %}
+
+                                        <span class="current">
+                                            Page {{ all_routes.number }} of {{ all_routes.paginator.num_pages }}
+                                        </span>
+
+                                        {% if all_routes.has_next %}
+                                            <a href="?page={{ all_routes.next_page_number }}" style="text-decoration:none">next</a>
+                                            <a href="?page={{ all_routes.paginator.num_pages }}" style="text-decoration:none">&raquo;</a>
+                                        {% endif %}
+                            	</span>
+                        	</div><br><br>
+							<!-- Statiscics -->
+							{% if category_objects_quantity %}
+							<div class="card flex-fill">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Statistics</h5>
+								</div>
+								<div class="card-body d-flex">
+									<div class="align-self-center w-100">
+										<div class="py-3">
+											<div class="chart chart-xs">
+												<canvas id="chartjs-dashboard-pie"></canvas>
+											</div>
+										</div>
+											<div class="container">
+												<div class="row">
+    												<div class="col">
+														{% for category in categories_list %}
+														<table class="table mb-0">
+															<tbody>
+																<tr>
+																	<td>{{category}}</td>
+																</tr>
+															</tbody>
+														</table>
+														{% endfor %}
+    												</div>
+													<div class="col">
+														{% for category in category_objects_quantity %}
+														<table class="table mb-0">
+															<tbody>
+																<tr>
+																	<td style="text-align:right">{{category}}</td>
+																</tr>
+															</tbody>
+														</table>
+														{% endfor %}
+													</div>
+												</div>
+											</div>
+									</div>
+								</div>
+							</div>
+							{% endif %}
+							<!-- Statistics end -->
+						</div>
+						<!-- Routes end -->
+					</div>
+				</div>
+			</main>
+
+<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			// Pie chart
+			new Chart(document.getElementById("chartjs-dashboard-pie"), {
+				type: "pie",
+				data: {
+					labels:{{categories_list|safe}},
+					datasets: [{
+						data: {{category_objects_quantity}},
+						backgroundColor: [
+							window.theme.primary,
+							window.theme.warning,
+							window.theme.danger,
+							window.theme.success,
+						],
+						borderWidth: 5
+					}]
+				},
+				options: {
+					responsive: !window.MSInputMethodContext,
+					maintainAspectRatio: false,
+					legend: {
+						display: false
+					},
+					cutoutPercentage: 75
+				}
+			});
+		});
+</script>
+
+
+{% endblock %}
